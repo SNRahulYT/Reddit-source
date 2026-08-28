@@ -1,0 +1,70 @@
+name: Update Moe Reddit source
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install WireGuard
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wireguard-tools
+
+      - name: Connect to Proton VPN
+        env:
+          PROTON_WIREGUARD_CONFIG: ${{ secrets.PROTON_WIREGUARD_CONFIG }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          printf '%s\n' "$PROTON_WIREGUARD_CONFIG" | sudo tee /tmp/proton.conf >/dev/null
+          sudo chmod 600 /tmp/proton.conf
+
+          sudo wg-quick up /tmp/proton.conf
+
+          echo "Connected to Proton."
+          echo "Public IP:"
+          curl -4 --fail --silent --show-error https://api.ipify.org
+          echo
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Check Moe and update source
+        run: python update_source.py
+
+      - name: Commit changed source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add moe-reddit.json
+
+          if git diff --cached --quiet; then
+            echo "No new Moe Reddit version found."
+          else
+            git commit -m "Update Moe's Reddit source"
+            git push
+          fi
+
+      - name: Disconnect Proton VPN
+        if: always()
+        run: |
+          sudo wg-quick down /tmp/proton.conf || true
