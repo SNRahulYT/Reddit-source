@@ -201,6 +201,7 @@ def main():
         "subtitle": "Moe's Reddit SideStore source",
         "description": (
             "Automatically tracked Moe's Reddit source."
+             f" Version - {version}"
         ),
         "apps": [
             {
