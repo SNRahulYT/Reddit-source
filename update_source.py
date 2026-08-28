@@ -19,7 +19,6 @@ ICON_URL = (
 )
 
 session = requests.Session()
-
 session.headers.update({
     "User-Agent": (
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
@@ -32,12 +31,10 @@ session.headers.update({
 def extract_drive_id(url):
     url = unquote(url.strip())
 
-    patterns = [
+    for pattern in [
         r"/file/d/([A-Za-z0-9_-]{20,})",
         r"[?&]id=([A-Za-z0-9_-]{20,})",
-    ]
-
-    for pattern in patterns:
+    ]:
         match = re.search(pattern, url)
 
         if match:
@@ -47,7 +44,6 @@ def extract_drive_id(url):
 
 
 def download_and_measure(file_id):
-
     url = (
         "https://drive.usercontent.google.com/download"
         f"?id={file_id}"
@@ -64,7 +60,6 @@ def download_and_measure(file_id):
     temp_file.close()
 
     try:
-
         print("Downloading IPA temporarily...")
 
         response = session.get(
@@ -79,33 +74,24 @@ def download_and_measure(file_id):
         total = 0
 
         with open(temp_path, "wb") as file:
-
             for chunk in response.iter_content(
                 chunk_size=1024 * 1024
             ):
-
                 if chunk:
                     file.write(chunk)
                     total += len(chunk)
 
         response.close()
 
-        print(
-            f"Downloaded {total} bytes"
-        )
+        print(f"Downloaded {total} bytes")
 
         if total < 10 * 1024 * 1024:
-
             raise RuntimeError(
                 f"Google Drive returned only {total} bytes "
                 "instead of the IPA."
             )
 
-        with open(
-            temp_path,
-            "rb"
-        ) as file:
-
+        with open(temp_path, "rb") as file:
             signature = file.read(4)
 
         if signature not in (
@@ -113,7 +99,6 @@ def download_and_measure(file_id):
             b"PK\x05\x06",
             b"PK\x07\x08"
         ):
-
             raise RuntimeError(
                 "Downloaded file is not a valid ZIP/IPA."
             )
@@ -121,13 +106,11 @@ def download_and_measure(file_id):
         return total
 
     finally:
-
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
 
 def main():
-
     print("Checking Moe's Reddit page...")
 
     response = session.get(
@@ -160,9 +143,7 @@ def main():
 
     version = versions[0]
 
-    print(
-        f"Found Reddit version: {version}"
-    )
+    print(f"Found Reddit version: {version}")
 
     download_url = None
 
@@ -170,7 +151,6 @@ def main():
         "a",
         href=True
     ):
-
         href = unquote(
             link["href"].strip()
         )
@@ -181,7 +161,6 @@ def main():
         ).lower()
 
         if "drive.google.com" in href:
-
             download_url = href
 
             if "download ipa" in label:
@@ -201,17 +180,13 @@ def main():
             "Could not extract Google Drive file ID."
         )
 
-    print(
-        f"Google Drive ID: {file_id}"
-    )
+    print(f"Google Drive ID: {file_id}")
 
     size = download_and_measure(
         file_id
     )
 
-    print(
-        f"REAL IPA SIZE: {size} bytes"
-    )
+    print(f"REAL IPA SIZE: {size} bytes")
 
     direct_url = (
         "https://drive.usercontent.google.com/download"
@@ -221,67 +196,36 @@ def main():
     )
 
     data = {
-
         "name": "Moe's Reddit",
-
         "identifier": "moe.reddit.source",
-
         "subtitle": "Moe's Reddit SideStore source",
-
-        "description":
-            "Automatically tracked Moe's Reddit source.",
-
+        "description": (
+            "Automatically tracked Moe's Reddit source."
+        ),
         "apps": [
-
             {
-
                 "name": "Moe's Reddit",
-
-                "bundleIdentifier":
-                    BUNDLE_ID,
-
-                "developerName":
-                    "Moe / mohkg1017",
-
-                "subtitle":
-                    "Patched Reddit",
-
-                "iconURL":
-                    ICON_URL,
-
-                "localizedDescription":
-                    f"Moe's Reddit {version}.",
-
+                "bundleIdentifier": BUNDLE_ID,
+                "developerName": "Moe / mohkg1017",
+                "subtitle": "Patched Reddit",
+                "iconURL": ICON_URL,
+                "localizedDescription": (
+                    f"Moe's Reddit {version}."
+                ),
                 "versions": [
-
                     {
-
-                        "version":
-                            version,
-
-                        "date":
-                            datetime.now(
-                                timezone.utc
-                            ).isoformat()
-                            .replace(
-                                "+00:00",
-                                "Z"
-                            ),
-
-                        "downloadURL":
-                            direct_url,
-
-                        "size":
-                            size
-
+                        "version": version,
+                        "date": (
+                            datetime.now(timezone.utc)
+                            .isoformat()
+                            .replace("+00:00", "Z")
+                        ),
+                        "downloadURL": direct_url,
+                        "size": size
                     }
-
                 ]
-
             }
-
         ]
-
     }
 
     with open(
@@ -289,18 +233,17 @@ def main():
         "w",
         encoding="utf-8"
     ) as file:
-
         json.dump(
             data,
             file,
             indent=2,
             ensure_ascii=False
         )
-
         file.write("\n")
 
     print(
         "Successfully updated moe-reddit.json"
+    )
 
 
 if __name__ == "__main__":
