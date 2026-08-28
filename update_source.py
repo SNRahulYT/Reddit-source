@@ -1,5 +1,7 @@
 import json
 import re
+import os
+import tempfile
 from datetime import datetime, timezone
 from urllib.parse import unquote
 
@@ -10,7 +12,6 @@ APP_PAGE = "https://moe.mohkg1017.pro/app/app_1769231115_3988"
 OUT = "moe-reddit.json"
 BUNDLE_ID = "com.reddit.Reddit"
 
-# Reddit icon
 ICON_URL = (
     "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/"
     "Content/Brand%20Page/Reddit_Logo.png"
@@ -45,83 +46,76 @@ def extract_drive_id(url):
     return None
 
 
-def get_file_size(url):
+def download_and_measure(url):
     """
-    Get the real IPA size without downloading the entire IPA.
+    Download the IPA temporarily and return its real size.
 
-    Google Drive can return Content-Length: 0 on HEAD requests,
-    so zero is never accepted.
+    Google Drive sometimes returns a confirmation HTML page first,
+    so we verify that the downloaded file actually looks like an IPA.
     """
 
-    # First try a ranged GET.
+    temp_file = tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".ipa"
+    )
+
+    temp_path = temp_file.name
+    temp_file.close()
+
     try:
+
         response = session.get(
             url,
-            headers={
-                "Range": "bytes=0-0"
-            },
             allow_redirects=True,
             stream=True,
-            timeout=60
+            timeout=120
         )
 
-        content_range = response.headers.get(
-            "Content-Range",
-            ""
-        )
+        response.raise_for_status()
 
-        match = re.search(
-            r"/(\d+)$",
-            content_range
-        )
+        total = 0
 
-        if match:
-            size = int(match.group(1))
+        with open(temp_path, "wb") as file:
 
-            if size > 0:
-                response.close()
-                return size
+            for chunk in response.iter_content(
+                chunk_size=1024 * 1024
+            ):
 
-        content_length = response.headers.get(
-            "Content-Length"
-        )
+                if chunk:
 
-        if content_length:
-            size = int(content_length)
-
-            if size > 0:
-                response.close()
-                return size
+                    file.write(chunk)
+                    total += len(chunk)
 
         response.close()
 
-    except requests.RequestException:
-        pass
+        if total < 10 * 1024 * 1024:
 
-    # Second attempt: HEAD.
-    try:
-        response = session.head(
-            url,
-            allow_redirects=True,
-            timeout=60
-        )
+            raise RuntimeError(
+                f"Downloaded file is only {total} bytes. "
+                "This probably isn't the IPA."
+            )
 
-        content_length = response.headers.get(
-            "Content-Length"
-        )
+        # An IPA is a ZIP archive.
+        with open(
+            temp_path,
+            "rb"
+        ) as file:
 
-        if content_length:
-            size = int(content_length)
+            signature = file.read(4)
 
-            if size > 0:
-                return size
+        if signature != b"PK\x03\x04":
 
-    except requests.RequestException:
-        pass
+            raise RuntimeError(
+                "Downloaded file does not look like an IPA/ZIP."
+            )
 
-    raise RuntimeError(
-        "Google Drive did not provide a valid IPA size."
-    )
+        return total
+
+    finally:
+
+        if os.path.exists(temp_path):
+
+            os.remove(temp_path)
 
 
 def main():
@@ -145,7 +139,6 @@ def main():
         strip=True
     )
 
-    # Find Reddit version.
     versions = re.findall(
         r"Reddit\s+(\d{4}\.\d+\.\d+)",
         text,
@@ -153,6 +146,7 @@ def main():
     )
 
     if not versions:
+
         raise RuntimeError(
             "Could not find Reddit version."
         )
@@ -163,7 +157,6 @@ def main():
         f"Found Reddit version: {version}"
     )
 
-    # Find Google Drive download link.
     download_url = None
 
     for link in soup.find_all(
@@ -185,9 +178,11 @@ def main():
             download_url = href
 
             if "download ipa" in label:
+
                 break
 
     if not download_url:
+
         raise RuntimeError(
             "Could not find Google Drive IPA link."
         )
@@ -197,6 +192,7 @@ def main():
     )
 
     if not file_id:
+
         raise RuntimeError(
             "Could not extract Google Drive ID."
         )
@@ -210,25 +206,25 @@ def main():
         f"Google Drive ID: {file_id}"
     )
 
-    # Get actual IPA size.
-    size = get_file_size(
+    print(
+        "Downloading IPA temporarily to determine real size..."
+    )
+
+    size = download_and_measure(
         direct_url
     )
 
     print(
-        f"IPA size: {size} bytes"
+        f"REAL IPA SIZE: {size} bytes"
     )
-
-    if size <= 0:
-        raise RuntimeError(
-            "Invalid IPA size returned."
-        )
 
     data = {
 
-        "name": "Moe's Reddit",
+        "name":
+            "Moe's Reddit",
 
-        "identifier": "moe.reddit.source",
+        "identifier":
+            "moe.reddit.source",
 
         "subtitle":
             "Moe's Reddit SideStore source",
@@ -311,4 +307,6 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
+    
