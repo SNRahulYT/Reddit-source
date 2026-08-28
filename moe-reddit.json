@@ -1,0 +1,22 @@
+{
+  "name": "Moe's Reddit",
+  "identifier": "moe.reddit.source",
+  "subtitle": "Moe's Reddit SideStore source",
+  "description": "Moe's Reddit — automatically tracked from Moe's App Hub.",
+  "apps": [
+    {
+      "name": "Moe's Reddit",
+      "bundleIdentifier": "com.reddit.Reddit",
+      "developerName": "Moe / mohkg1017",
+      "subtitle": "Patched Reddit",
+      "localizedDescription": "Moe's Reddit build.",
+      "versions": [
+        {
+          "version": "2026.33.0",
+          "buildVersion": "636848",
+          "downloadURL": "https://drive.google.com/uc?export=download&id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1"
+        }
+      ]
+    }
+  ]
+}
