@@ -9,12 +9,12 @@
       "bundleIdentifier": "com.reddit.Reddit",
       "developerName": "Moe / mohkg1017",
       "subtitle": "Patched Reddit",
-      "iconURL": "https://moe.mohkg1017.pro/favicon.ico",
+      "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
       "localizedDescription": "Moe's Reddit 2026.33.0.",
       "versions": [
         {
           "version": "2026.33.0",
-          "date": "2026-08-28T11:02:22.478210Z",
+          "date": "2026-08-28T11:14:34.602202Z",
           "downloadURL": "https://drive.google.com/uc?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download",
           "size": 0
         }
