@@ -9,6 +9,7 @@
       "bundleIdentifier": "com.reddit.Reddit",
       "developerName": "Moe / mohkg1017",
       "subtitle": "Patched Reddit",
+      "iconURL": "https://moe.mohkg1017.pro/favicon.ico",
       "localizedDescription": "Moe's Reddit 2026.33.0.",
       "versions": [
         {
