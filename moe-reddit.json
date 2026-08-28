@@ -2,7 +2,7 @@
   "name": "Moe's Reddit",
   "identifier": "moe.reddit.source",
   "subtitle": "Moe's Reddit SideStore source",
-  "description": "Version - {version}",
+  "description": "Version - 2026.33.0 ",
   "apps": [
     {
       "name": "Moe's Reddit",
@@ -14,7 +14,7 @@
       "versions": [
         {
           "version": "2026.33.0",
-          "date": "2026-08-28T15:04:15.516190Z",
+          "date": "2026-08-28T15:07:29.044153Z",
           "downloadURL": "https://drive.usercontent.google.com/download?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download&confirm=t",
           "size": 145192621
         }
