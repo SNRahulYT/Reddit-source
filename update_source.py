@@ -9,9 +9,16 @@ from bs4 import BeautifulSoup
 APP_PAGE = "https://moe.mohkg1017.pro/app/app_1769231115_3988"
 OUT = "moe-reddit.json"
 BUNDLE_ID = "com.reddit.Reddit"
-ICON_URL = "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400"
+
+# Reddit icon
+ICON_URL = (
+    "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/"
+    "Content/Brand%20Page/Reddit_Logo.png"
+    "?height=400&name=Reddit_Logo.png&width=400"
+)
 
 session = requests.Session()
+
 session.headers.update({
     "User-Agent": (
         "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) "
@@ -24,10 +31,12 @@ session.headers.update({
 def extract_drive_id(url):
     url = unquote(url.strip())
 
-    for pattern in (
+    patterns = [
         r"/file/d/([A-Za-z0-9_-]{20,})",
         r"[?&]id=([A-Za-z0-9_-]{20,})",
-    ):
+    ]
+
+    for pattern in patterns:
         match = re.search(pattern, url)
 
         if match:
@@ -37,28 +46,23 @@ def extract_drive_id(url):
 
 
 def get_file_size(url):
-    try:
-        response = session.head(
-            url,
-            allow_redirects=True,
-            timeout=30
-        )
+    """
+    Get the real IPA size without downloading the entire IPA.
 
-        value = response.headers.get("Content-Length")
+    Google Drive can return Content-Length: 0 on HEAD requests,
+    so zero is never accepted.
+    """
 
-        if value and value.isdigit():
-            return int(value)
-
-    except requests.RequestException:
-        pass
-
+    # First try a ranged GET.
     try:
         response = session.get(
             url,
-            headers={"Range": "bytes=0-0"},
+            headers={
+                "Range": "bytes=0-0"
+            },
             allow_redirects=True,
             stream=True,
-            timeout=30
+            timeout=60
         )
 
         content_range = response.headers.get(
@@ -72,32 +76,61 @@ def get_file_size(url):
         )
 
         if match:
-            response.close()
-            return int(match.group(1))
+            size = int(match.group(1))
 
-        value = response.headers.get(
+            if size > 0:
+                response.close()
+                return size
+
+        content_length = response.headers.get(
             "Content-Length"
         )
 
-        if value and value.isdigit():
-            response.close()
-            return int(value)
+        if content_length:
+            size = int(content_length)
+
+            if size > 0:
+                response.close()
+                return size
 
         response.close()
 
     except requests.RequestException:
         pass
 
+    # Second attempt: HEAD.
+    try:
+        response = session.head(
+            url,
+            allow_redirects=True,
+            timeout=60
+        )
+
+        content_length = response.headers.get(
+            "Content-Length"
+        )
+
+        if content_length:
+            size = int(content_length)
+
+            if size > 0:
+                return size
+
+    except requests.RequestException:
+        pass
+
     raise RuntimeError(
-        "Could not determine IPA file size."
+        "Google Drive did not provide a valid IPA size."
     )
 
 
 def main():
 
+    print("Checking Moe's Reddit page...")
+
     response = session.get(
         APP_PAGE,
-        timeout=30
+        timeout=60
     )
 
     response.raise_for_status()
@@ -112,6 +145,7 @@ def main():
         strip=True
     )
 
+    # Find Reddit version.
     versions = re.findall(
         r"Reddit\s+(\d{4}\.\d+\.\d+)",
         text,
@@ -125,6 +159,11 @@ def main():
 
     version = versions[0]
 
+    print(
+        f"Found Reddit version: {version}"
+    )
+
+    # Find Google Drive download link.
     download_url = None
 
     for link in soup.find_all(
@@ -167,9 +206,23 @@ def main():
         f"id={file_id}&export=download"
     )
 
+    print(
+        f"Google Drive ID: {file_id}"
+    )
+
+    # Get actual IPA size.
     size = get_file_size(
         direct_url
     )
+
+    print(
+        f"IPA size: {size} bytes"
+    )
+
+    if size <= 0:
+        raise RuntimeError(
+            "Invalid IPA size returned."
+        )
 
     data = {
 
@@ -177,7 +230,8 @@ def main():
 
         "identifier": "moe.reddit.source",
 
-        "subtitle": "Moe's Reddit SideStore source",
+        "subtitle":
+            "Moe's Reddit SideStore source",
 
         "description":
             "Automatically tracked Moe's Reddit source.",
@@ -186,7 +240,8 @@ def main():
 
             {
 
-                "name": "Moe's Reddit",
+                "name":
+                    "Moe's Reddit",
 
                 "bundleIdentifier":
                     BUNDLE_ID,
@@ -251,15 +306,7 @@ def main():
         file.write("\n")
 
     print(
-        f"Found Moe's Reddit {version}"
-    )
-
-    print(
-        f"Google Drive ID: {file_id}"
-    )
-
-    print(
-        f"IPA size: {size} bytes"
+        "Successfully updated moe-reddit.json"
     )
 
 
