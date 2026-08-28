@@ -14,8 +14,9 @@
       "versions": [
         {
           "version": "2026.33.0",
-          "date": "2026-08-28T10:47:12.707041Z",
-          "downloadURL": "https://drive.google.com/uc?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download"
+          "date": "2026-08-28T10:47:12Z",
+          "downloadURL": "https://drive.google.com/uc?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download",
+          "size": 145192621
         }
       ]
     }
