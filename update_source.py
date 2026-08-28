@@ -46,13 +46,14 @@ def extract_drive_id(url):
     return None
 
 
-def download_and_measure(url):
-    """
-    Download the IPA temporarily and return its real size.
+def download_and_measure(file_id):
 
-    Google Drive sometimes returns a confirmation HTML page first,
-    so we verify that the downloaded file actually looks like an IPA.
-    """
+    url = (
+        "https://drive.usercontent.google.com/download"
+        f"?id={file_id}"
+        "&export=download"
+        "&confirm=t"
+    )
 
     temp_file = tempfile.NamedTemporaryFile(
         delete=False,
@@ -64,11 +65,13 @@ def download_and_measure(url):
 
     try:
 
+        print("Downloading IPA temporarily...")
+
         response = session.get(
             url,
             allow_redirects=True,
             stream=True,
-            timeout=120
+            timeout=180
         )
 
         response.raise_for_status()
@@ -82,20 +85,22 @@ def download_and_measure(url):
             ):
 
                 if chunk:
-
                     file.write(chunk)
                     total += len(chunk)
 
         response.close()
 
+        print(
+            f"Downloaded {total} bytes"
+        )
+
         if total < 10 * 1024 * 1024:
 
             raise RuntimeError(
-                f"Downloaded file is only {total} bytes. "
-                "This probably isn't the IPA."
+                f"Google Drive returned only {total} bytes "
+                "instead of the IPA."
             )
 
-        # An IPA is a ZIP archive.
         with open(
             temp_path,
             "rb"
@@ -103,10 +108,14 @@ def download_and_measure(url):
 
             signature = file.read(4)
 
-        if signature != b"PK\x03\x04":
+        if signature not in (
+            b"PK\x03\x04",
+            b"PK\x05\x06",
+            b"PK\x07\x08"
+        ):
 
             raise RuntimeError(
-                "Downloaded file does not look like an IPA/ZIP."
+                "Downloaded file is not a valid ZIP/IPA."
             )
 
         return total
@@ -114,7 +123,6 @@ def download_and_measure(url):
     finally:
 
         if os.path.exists(temp_path):
-
             os.remove(temp_path)
 
 
@@ -146,7 +154,6 @@ def main():
     )
 
     if not versions:
-
         raise RuntimeError(
             "Could not find Reddit version."
         )
@@ -178,11 +185,9 @@ def main():
             download_url = href
 
             if "download ipa" in label:
-
                 break
 
     if not download_url:
-
         raise RuntimeError(
             "Could not find Google Drive IPA link."
         )
@@ -192,42 +197,36 @@ def main():
     )
 
     if not file_id:
-
         raise RuntimeError(
-            "Could not extract Google Drive ID."
+            "Could not extract Google Drive file ID."
         )
-
-    direct_url = (
-        f"https://drive.google.com/uc?"
-        f"id={file_id}&export=download"
-    )
 
     print(
         f"Google Drive ID: {file_id}"
     )
 
-    print(
-        "Downloading IPA temporarily to determine real size..."
-    )
-
     size = download_and_measure(
-        direct_url
+        file_id
     )
 
     print(
         f"REAL IPA SIZE: {size} bytes"
     )
 
+    direct_url = (
+        "https://drive.usercontent.google.com/download"
+        f"?id={file_id}"
+        "&export=download"
+        "&confirm=t"
+    )
+
     data = {
 
-        "name":
-            "Moe's Reddit",
+        "name": "Moe's Reddit",
 
-        "identifier":
-            "moe.reddit.source",
+        "identifier": "moe.reddit.source",
 
-        "subtitle":
-            "Moe's Reddit SideStore source",
+        "subtitle": "Moe's Reddit SideStore source",
 
         "description":
             "Automatically tracked Moe's Reddit source.",
@@ -236,8 +235,7 @@ def main():
 
             {
 
-                "name":
-                    "Moe's Reddit",
+                "name": "Moe's Reddit",
 
                 "bundleIdentifier":
                     BUNDLE_ID,
@@ -303,10 +301,7 @@ def main():
 
     print(
         "Successfully updated moe-reddit.json"
-    )
 
 
 if __name__ == "__main__":
-
     main()
-    
