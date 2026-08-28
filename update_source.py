@@ -200,7 +200,7 @@ def main():
         "identifier": "moe.reddit.source",
         "subtitle": "Moe's Reddit SideStore source",
         "description": (
-            "Version - {version}"
+            f"Version - {version} "
         ),
         "apps": [
             {
