@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 APP_PAGE = "https://moe.mohkg1017.pro/app/app_1769231115_3988"
 OUT = "moe-reddit.json"
 BUNDLE_ID = "com.reddit.Reddit"
-ICON_URL = "https://moe.mohkg1017.pro/favicon.ico"
+ICON_URL = "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400"
 
 session = requests.Session()
 session.headers.update({
