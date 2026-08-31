@@ -1,24 +1,36 @@
 {
   "name": "Moe's Reddit",
   "identifier": "moe.reddit.source",
-  "subtitle": "Moe's Reddit SideStore source",
-  "description": "Version - 2026.33.0 ",
+  "apiVersion": "v2",
+  "subtitle": "Automated Moe's Reddit IPA builds",
+  "description": "Moe's Reddit • Reddit Version 2026.33.0",
+  "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
+  "website": "https://moe.mohkg1017.pro/",
+  "sourceURL": "https://raw.githubusercontent.com/SNRahulYT/Reddit-source/main/moe-reddit.json",
   "apps": [
     {
       "name": "Moe's Reddit",
       "bundleIdentifier": "com.reddit.Reddit",
       "developerName": "Moe / mohkg1017",
       "subtitle": "Patched Reddit",
+      "category": "social-networking",
       "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
-      "localizedDescription": "Moe's Reddit 2026.33.0.",
+      "version": "2026.33.0",
+      "versionDate": "2026-08-31T19:07:00.001461Z",
+      "versionDescription": "Reddit Version 2026.33.0",
+      "downloadURL": "https://drive.usercontent.google.com/download?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download&confirm=t",
+      "size": 145192621,
+      "localizedDescription": "Moe's Reddit is a modified Reddit IPA with Moe's patches and fixes.",
       "versions": [
         {
           "version": "2026.33.0",
-          "date": "2026-08-31T10:52:22.611678Z",
+          "date": "2026-08-31T19:07:00.001461Z",
+          "localizedDescription": "Reddit Version 2026.33.0",
           "downloadURL": "https://drive.usercontent.google.com/download?id=1S-KdXBZxgWqRwHvhXBxE9ikaJJxCtTa1&export=download&confirm=t",
           "size": 145192621
         }
       ]
     }
-  ]
+  ],
+  "news": []
 }
