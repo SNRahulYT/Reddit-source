@@ -16,18 +16,18 @@
       "category": "social-networking",
       "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
       "version": "2026.36.0",
-      "versionDate": "2026-09-10T08:57:32.434430Z",
+      "versionDate": "2026-09-11T08:55:35.568060Z",
       "versionDescription": "Reddit Version 2026.36.0",
-      "downloadURL": "https://drive.usercontent.google.com/download?id=16wNr7yIeO9rSHJtszyLoVb1VmvtKkXwl&export=download&confirm=t",
-      "size": 148219125,
+      "downloadURL": "https://drive.usercontent.google.com/download?id=1CIkAWMhNB8G-AAA88sQLkbrDAYDqL8LO&export=download&confirm=t",
+      "size": 148138163,
       "localizedDescription": "Moe's Reddit is a modified Reddit IPA with Moe's patches and fixes.",
       "versions": [
         {
           "version": "2026.36.0",
-          "date": "2026-09-10T08:57:32.434430Z",
+          "date": "2026-09-11T08:55:35.568060Z",
           "localizedDescription": "Reddit Version 2026.36.0",
-          "downloadURL": "https://drive.usercontent.google.com/download?id=16wNr7yIeO9rSHJtszyLoVb1VmvtKkXwl&export=download&confirm=t",
-          "size": 148219125
+          "downloadURL": "https://drive.usercontent.google.com/download?id=1CIkAWMhNB8G-AAA88sQLkbrDAYDqL8LO&export=download&confirm=t",
+          "size": 148138163
         }
       ]
     }
