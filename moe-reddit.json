@@ -3,7 +3,7 @@
   "identifier": "moe.reddit.source",
   "apiVersion": "v2",
   "subtitle": "Automated Moe's Reddit IPA builds",
-  "description": "Moe's Reddit • Reddit Version 2026.36.0",
+  "description": "Moe's Reddit • Reddit Version 2026.37.0",
   "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
   "website": "https://moe.mohkg1017.pro/",
   "sourceURL": "https://raw.githubusercontent.com/SNRahulYT/Reddit-source/main/moe-reddit.json",
@@ -15,19 +15,19 @@
       "subtitle": "Patched Reddit",
       "category": "social-networking",
       "iconURL": "https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Content/Brand%20Page/Reddit_Logo.png?height=400&name=Reddit_Logo.png&width=400",
-      "version": "2026.36.0",
-      "versionDate": "2026-09-15T09:26:08.811269Z",
-      "versionDescription": "Reddit Version 2026.36.0",
-      "downloadURL": "https://drive.usercontent.google.com/download?id=1OQQAlIdliy2WA0amodshzaSocNF_xIWn&export=download&confirm=t",
-      "size": 148140449,
+      "version": "2026.37.0",
+      "versionDate": "2026-09-17T09:27:16.822586Z",
+      "versionDescription": "Reddit Version 2026.37.0",
+      "downloadURL": "https://drive.usercontent.google.com/download?id=1AFL3AcKjHHg1VmatgdLA8JmdvX8HhKaW&export=download&confirm=t",
+      "size": 147479505,
       "localizedDescription": "Moe's Reddit is a modified Reddit IPA with Moe's patches and fixes.",
       "versions": [
         {
-          "version": "2026.36.0",
-          "date": "2026-09-15T09:26:08.811269Z",
-          "localizedDescription": "Reddit Version 2026.36.0",
-          "downloadURL": "https://drive.usercontent.google.com/download?id=1OQQAlIdliy2WA0amodshzaSocNF_xIWn&export=download&confirm=t",
-          "size": 148140449
+          "version": "2026.37.0",
+          "date": "2026-09-17T09:27:16.822586Z",
+          "localizedDescription": "Reddit Version 2026.37.0",
+          "downloadURL": "https://drive.usercontent.google.com/download?id=1AFL3AcKjHHg1VmatgdLA8JmdvX8HhKaW&export=download&confirm=t",
+          "size": 147479505
         }
       ]
     }
